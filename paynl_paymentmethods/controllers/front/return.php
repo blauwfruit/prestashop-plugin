@@ -64,7 +64,7 @@ class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontControl
                 }
             }
             if ($result['state'] == 'PENDING') {
-                Tools::redirect('index.php?controller=order-confirmation&id_cart='.$result['orderId'].'&id_module='.$this->module->id.'&id_order='.$result['real_order_id'].'&key='.$customer->secure_key);
+                Tools::redirect('index.php?controller=order-confirmation&id_cart='.$result['orderId'].'&id_module='.$this->module->id.'&id_order='.$result['real_order_id'].'&key='.$customer->secure_key.$slowvalidation);
             }
         } catch (Exception $ex) {
 

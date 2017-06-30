@@ -73,6 +73,11 @@ class Pay_Helper_Transaction {
 
         $stateId = $result['paymentDetails']['state'];
 
+        if($stateId == 95){
+            // authorized transactions have no paidamount
+            $transactionAmount = $result['paymentDetails']['currenyAmount'];
+        }
+
         $stateText = self::getStateText($stateId);
 
         //de transactie ophalen
@@ -206,6 +211,7 @@ class Pay_Helper_Transaction {
             case -51:
                 return 'CHECKAMOUNT';
             case 100:
+            case 95:
                 return 'PAID';
             default:
                 if ($stateId < 0) {

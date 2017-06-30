@@ -12,7 +12,7 @@ class Pay_Api {
      *
      * @var string the url to the pay.nl api
      */
-    protected $_apiUrl = 'http://rest-api.pay.nl';
+    protected $_apiUrl = 'https://rest-api.pay.nl';
     /**
      *
      * @var string The version af the api to use
