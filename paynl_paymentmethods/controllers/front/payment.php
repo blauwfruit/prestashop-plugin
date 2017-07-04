@@ -125,8 +125,9 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             $arrEnduser['lastName'] = $customer->lastname;
 
             list($year, $month, $day) = explode('-', $customer->birthday);
-            $arrEnduser['dob'] = $day . '-' . $month . '-' . $year;
-
+            if(checkdate($month, $day, $year)){
+                $arrEnduser['dob'] = $day . '-' . $month . '-' . $year;
+            }
 
             $arrEnduser['emailAddress'] = $customer->email;
 
