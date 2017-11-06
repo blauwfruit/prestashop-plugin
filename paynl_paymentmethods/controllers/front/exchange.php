@@ -36,14 +36,14 @@ class paynl_paymentmethodsExchangeModuleFrontController extends ModuleFrontContr
            
             try{
                 if(strpos($action, 'refund') !== false){
-                    throw new Pay_Exception('Ignoring refund');
+                	die('TRUE| Ignoring refund');
                 }
                 if(strpos($action, 'pending') !== false){
-                    throw new Pay_Exception('Ignoring pending');
+	                die('TRUE| Ignoring pending');
                 }
                 $result = Pay_Helper_Transaction::processTransaction($transactionId);
             } catch (Exception $ex) {
-                echo "TRUE| ";
+                echo "FALSE| ";
                 echo $ex->getMessage();
                 die();
             }
