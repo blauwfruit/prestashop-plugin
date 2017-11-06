@@ -30,47 +30,72 @@
  */
 class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontController {
 
-    public function initContent() {
-        parent::initContent();
-        $transactionId = Tools::getValue('orderId');
+	public function initContent() {
+		parent::initContent();
+		$transactionId = Tools::getValue( 'orderId' );
 
-        try {
-            $result = Pay_Helper_Transaction::processTransaction($transactionId, true);
+		try {
+			$result = Pay_Helper_Transaction::processTransaction( $transactionId, true );
 
-            $order = new Order($result['real_order_id']);
-            $customer = new Customer($order->id_customer);
+			/**
+			 * @var $order OrderCore
+			 */
+			$order    = new Order( $result['real_order_id'] );
+			/**
+			 * @var $customer CustomerCore
+			 */
+			$customer = new Customer( $order->id_customer );
 
-            $this->context->smarty->assign(array(
-                'reference_order' => $result['real_order_id'],
-                'email' => $customer->email,
-                'id_order_formatted'=> $order->reference,
-            ));
-            $slowvalidation = '';
-            if(!($result['real_order_id'])){
-                $slowvalidation = "&slowvalidation=1";
-            }
-            if ($result['state'] == 'PAID') {
-                Tools::redirect('index.php?controller=order-confirmation&id_cart='.$result['orderId'].'&id_module='.$this->module->id.'&id_order='.$result['real_order_id'].'&key='.$customer->secure_key.$slowvalidation);
-             
-            }
-            if ($result['state'] == 'CHECKAMOUNT') {
-                $this->setTemplate('return_checkamount.tpl');
-            }
-            if ($result['state'] == 'CANCEL') {
-                if(!empty($result['real_order_id'])){
-                    Tools::redirect('index.php?controller=order&submitReorder=Reorder&id_order='.$result['real_order_id']);
-                }else {
-                    Tools::redirect('index.php?controller=order');
-                }
-            }
-            if ($result['state'] == 'PENDING') {
-                Tools::redirect('index.php?controller=order-confirmation&id_cart='.$result['orderId'].'&id_module='.$this->module->id.'&id_order='.$result['real_order_id'].'&key='.$customer->secure_key.$slowvalidation);
-            }
-        } catch (Exception $ex) {
+			$this->context->smarty->assign( array(
+				'reference_order'    => $result['real_order_id'],
+				'email'              => $customer->email,
+				'id_order_formatted' => $order->reference,
+			) );
+			$slowvalidation = '';
+			if ( ! ( $result['real_order_id'] ) ) {
+				$slowvalidation = "&slowvalidation=1";
+			}
+			if ( $result['state'] == 'PAID' ) {
+				// unset cartId
+				$this->resetCart();
+                Tools::redirect( 'index.php?controller=order-confirmation&id_cart=' . $result['orderId'] . '&id_module=' . $this->module->id . '&id_order=' . $result['real_order_id'] . '&key=' . $customer->secure_key . $slowvalidation );
 
-            echo 'Error: ' . $ex->getMessage();
-            die();
-        }
-    }
+            }
+			if ( $result['state'] == 'CHECKAMOUNT' ) {
+				$this->setTemplate( 'return_checkamount.tpl' );
+			}
+			if ( $result['state'] == 'CANCEL' ) {
+				if ( ! empty( $result['real_order_id'] ) ) {
+					Tools::redirect( 'index.php?controller=order&submitReorder=Reorder&id_order=' . $result['real_order_id'] );
+				} else {
+					Tools::redirect( 'index.php?controller=order' );
+				}
+			}
+			if ( $result['state'] == 'PENDING' ) {
+				$this->resetCart();
+				Tools::redirect( 'index.php?controller=order-confirmation&id_cart=' . $result['orderId'] . '&id_module=' . $this->module->id . '&id_order=' . $result['real_order_id'] . '&key=' . $customer->secure_key . $slowvalidation );
+			}
+		} catch ( Exception $ex ) {
+			echo 'Error: ' . $ex->getMessage();
+			die();
+		}
+	}
+
+	private function resetCart() {
+		/**
+		 * @var $cart CartCore
+		 */
+		$cart = new Cart();
+
+		$cart->id_customer = (int)($this->context->cookie->id_customer);
+		$cart->id_address_delivery = (int)  (Address::getFirstCustomerAddressId($cart->id_customer));
+		$cart->id_address_invoice = $cart->id_address_delivery;
+		$cart->id_lang = (int)($this->context->cookie->id_lang);
+		$cart->id_currency = (int)($this->context->cookie->id_currency);
+		$cart->add();
+
+		$this->context->cookie->id_cart = (int)($cart->id);
+		$cart->update();
+	}
 
 }
