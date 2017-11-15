@@ -22,7 +22,6 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-Hallo
 <p>{l s='Your order on %s is complete.' sprintf=$shop_name mod='paynl_paymentmethods'}</p>
 
 <p>{l s='Your ordernumber is: %s' sprintf=$id_order mod='paynl_paymentmethods'}</p>

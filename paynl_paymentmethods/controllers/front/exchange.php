@@ -42,6 +42,10 @@ class paynl_paymentmethodsExchangeModuleFrontController extends ModuleFrontContr
 	                die('TRUE| Ignoring pending');
                 }
                 $result = Pay_Helper_Transaction::processTransaction($transactionId);
+            } catch (Pay_Exception_Notice $ex) {
+                echo "TRUE| ";
+                echo $ex->getMessage();
+                die();
             } catch (Exception $ex) {
                 echo "FALSE| ";
                 echo $ex->getMessage();

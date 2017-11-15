@@ -1,63 +1,16 @@
 <?php
 
-class Pay_Helper_Transaction {
+class Pay_Helper_Transaction
+{
 
-    public static function addTransaction($transaction_id, $option_id, $amount, $currency, $order_id, $startData) {
-        $db = Db::getInstance();
+    public static function processTransaction($transactionId, $dry_run = false)
+    {
+        /**
+         * @var $module paynl_paymentmethods
+         */
+        $module = Module::getInstanceByName(Tools::getValue('module'));
 
-        $data = array(
-            'transaction_id' => $transaction_id,
-            'option_id' => (int)$option_id,
-            'amount' => (int)$amount,
-            'currency' => $currency,
-            'order_id' => $order_id,
-            'status' => 'NEW',
-            'start_data' => $db->escape(json_encode($startData)),
-        );
-
-        $db->insert('pay_transactions', $data);
-    }
-
-    private static function updateTransactionState($transactionId, $statusText) {
-        $db = Db::getInstance();
-
-        $db->update('pay_transactions', array('status' => $statusText), "transaction_id = '" . $db->escape($transactionId) . "'");
-    }
-
-    public static function getTransaction($transaction_id) {
-        $db = Db::getInstance();
-
-        $sql = "SELECT * FROM " . _DB_PREFIX_ . "pay_transactions WHERE transaction_id = '" . $db->escape($transaction_id) . "'";
-
-        $row = $db->getRow($sql);
-        if (empty($row)) {
-            throw new Pay_Exception('Transaction not found');
-        }
-        return $row;
-    }
-
-    /**
-     * Check if the order is already paid, it is possible that an order has more than 1 transaction.
-     * So we heck if another transaction for this order is already paid
-     *
-     * @param integer $order_id
-     */
-    public static function orderPaid($order_id) {
-        $db = Db::getInstance();
-
-        $sql = "SELECT * FROM " . _DB_PREFIX_ . "pay_transactions WHERE order_id = '" . $db->escape($order_id) . "' AND status = 'PAID'";
-
-        $row = $db->getRow($sql);
-        if (empty($row)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public static function processTransaction($transactionId, $dry_run = false) {
-
-        $token = Configuration::get('PAYNL_TOKEN');
+        $token     = Configuration::get('PAYNL_TOKEN');
         $serviceId = Configuration::get('PAYNL_SERVICE_ID');
 
         $apiInfo = new Pay_Api_Info();
@@ -73,7 +26,7 @@ class Pay_Helper_Transaction {
 
         $stateId = $result['paymentDetails']['state'];
 
-        if($stateId == 95){
+        if ($stateId == 95) {
             // authorized transactions have no paidamount
             $transactionAmount = $result['paymentDetails']['currenyAmount'];
         }
@@ -81,11 +34,13 @@ class Pay_Helper_Transaction {
         $stateText = self::getStateText($stateId);
 
         //de transactie ophalen
-        try{
+        try {
             $transaction = self::getTransaction($transactionId);
         } catch (Pay_Exception $ex) {
             // transactie is niet gevonden... quickfix, we voegen hem opnieuw toe
-            self::addTransaction($transactionId, $result['paymentDetails']['paymentOptionId'], $result['paymentDetails']['amount'],  $result['paymentDetails']['paidCurrency'], str_replace('CartId: ', '', $result['statsDetails']['extra1']), 'Inserted after not found');
+            self::addTransaction($transactionId, $result['paymentDetails']['paymentOptionId'],
+                $result['paymentDetails']['amount'], $result['paymentDetails']['paidCurrency'],
+                str_replace('CartId: ', '', $result['statsDetails']['extra1']), 'Inserted after not found');
 
             $transaction = self::getTransaction($transactionId);
         }
@@ -94,48 +49,41 @@ class Pay_Helper_Transaction {
 
         $orderPaid = self::orderPaid($orderId);
 
-        if ($orderPaid == true && $stateText != 'PAID') {
-            throw new Pay_Exception('Order already paid');
-        }
-
-        if ($stateText == $transaction['status'] || $dry_run) {
-            //nothing changed so return without changing anything
+        if ($dry_run) {
             $real_order_id = Order::getOrderByCartId($orderId);
+
             return array(
-                'orderId' => $orderId,
-                'state' => $stateText,
+                'orderId'       => $orderId,
+                'state'         => $stateText,
                 'real_order_id' => $real_order_id,
             );
+        }
+
+        if ($orderPaid == true && $stateText != 'PAID') {
+            throw new Pay_Exception_Notice('Order already paid');
+        }
+
+        if ($stateText == $transaction['status']) {
+            throw new Pay_Exception_Notice('Status already processed');
         }
 
         //update the transaction state
         self::updateTransactionState($transactionId, $stateText);
 
-        $objOrder = Order::getOrderByCartId($cartId);
-        //$objOrder = new Order($orderId);
+        $statusPaid    = Configuration::get('PAYNL_SUCCESS');
+        $statusCancel  = Configuration::get('PAYNL_CANCEL');
 
-        $statusPending = Configuration::get('PAYNL_WAIT');
-        $statusPaid = Configuration::get('PAYNL_SUCCESS');
-        $statusCancel = Configuration::get('PAYNL_CANCEL');
-
-
-        $id_order_state = '';
-
-        $paid = false;
 
         if ($stateText == 'PAID') {
             $id_order_state = $statusPaid;
 
-            $module = Module::getInstanceByName(Tools::getValue('module'));
-
-            $cart = new Cart($cartId);
+            $cart     = new Cart($cartId);
             $customer = new Customer($cart->id_customer);
 
             $currency = $cart->id_currency;
 
-
             $orderTotal = $cart->getOrderTotal();
-            $extraFee = $module->getExtraCosts($transaction['option_id'], $orderTotal);
+            $extraFee   = $module->getExtraCosts($transaction['option_id'], $orderTotal);
 
             if (isset($cart->additional_shipping_cost)) {
                 $cart->additional_shipping_cost += $extraFee;
@@ -149,53 +97,35 @@ class Pay_Helper_Transaction {
             $paidAmount = $transactionAmount / 100;
 
 
+            $module->validateOrderPay((int)$cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, null,
+                array('transaction_id' => $transactionId), (int)$currency, false, $customer->secure_key);
 
-            $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, array('transaction_id' => $transactionId), (int) $currency, false, $customer->secure_key);
-
-            $real_order_id = Order::getOrderByCartId($cart->id);
         } elseif ($stateText == 'CANCEL') {
+            // Only cancel if validateOnStart is true
+
             $real_order_id = Order::getOrderByCartId($cartId);
 
+            if ( ! self::shouldCancel($transactionId)) {
+                throw new Pay_Exception_Notice('Not cancelling because an order should not have been made by this method');
+            }
+
             if ($real_order_id) {
-                $objOrder = new Order($real_order_id);
-                $history = new OrderHistory();
-                $history->id_order = (int) $objOrder->id;
-                $history->changeIdOrderState((int) $statusCancel, $objOrder);
+                /**
+                 * @var $objOrder OrderCore
+                 */
+                $objOrder          = new Order($real_order_id);
+                $history           = new OrderHistory();
+                $history->id_order = (int)$objOrder->id;
+                $history->changeIdOrderState((int)$statusCancel, $objOrder);
                 $history->addWithemail();
             }
-        } elseif ($stateText == 'PENDING'){
-            $id_order_state = $statusPending;
-
-            $module = Module::getInstanceByName(Tools::getValue('module'));
-
-            $cart = new Cart($cartId);
-            $customer = new Customer($cart->id_customer);
-
-            $currency = $cart->id_currency;
-
-
-            $orderTotal = $cart->getOrderTotal();
-            $extraFee = $module->getExtraCosts($transaction['option_id'], $orderTotal);
-
-            $cart->additional_shipping_cost += $extraFee;
-
-            $cart->save();
-
-            $paymentMethodName = $module->getPaymentMethodName($transaction['option_id']);
-
-
-            $paidAmount = 0;
-
-
-            $module->validateOrderPay((int) $cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, NULL, array('transaction_id' => $transactionId), (int) $currency, false, $customer->secure_key);
-
-            $real_order_id = Order::getOrderByCartId($cart->id);
         }
 
+        $real_order_id = Order::getOrderByCartId($cartId);
         return array(
-            'orderId' => $orderId,
+            'orderId'       => $orderId,
             'real_order_id' => $real_order_id,
-            'state' => $stateText,
+            'state'         => $stateText,
         );
     }
 
@@ -203,9 +133,11 @@ class Pay_Helper_Transaction {
      * Get the status by statusId
      *
      * @param int $statusId
+     *
      * @return string The status
      */
-    public static function getStateText($stateId) {
+    public static function getStateText($stateId)
+    {
         switch ($stateId) {
             case 80:
             case -51:
@@ -220,6 +152,77 @@ class Pay_Helper_Transaction {
                     return 'PENDING';
                 }
         }
+    }
+
+    public static function getTransaction($transaction_id)
+    {
+        $db = Db::getInstance();
+
+        $sql = "SELECT * FROM " . _DB_PREFIX_ . "pay_transactions WHERE transaction_id = '" . $db->escape($transaction_id) . "'";
+
+        $row = $db->getRow($sql);
+        if (empty($row)) {
+            throw new Pay_Exception('Transaction not found');
+        }
+
+        return $row;
+    }
+
+    public static function addTransaction($transaction_id, $option_id, $amount, $currency, $order_id, $startData)
+    {
+        $db = Db::getInstance();
+
+        $data = array(
+            'transaction_id' => $transaction_id,
+            'option_id'      => (int)$option_id,
+            'amount'         => (int)$amount,
+            'currency'       => $currency,
+            'order_id'       => $order_id,
+            'status'         => 'NEW',
+            'start_data'     => $db->escape(json_encode($startData)),
+        );
+
+        $db->insert('pay_transactions', $data);
+    }
+
+    /**
+     * Check if the order is already paid, it is possible that an order has more than 1 transaction.
+     * So we heck if another transaction for this order is already paid
+     *
+     * @param integer $order_id
+     */
+    public static function orderPaid($order_id)
+    {
+        $db = Db::getInstance();
+
+        $sql = "SELECT * FROM " . _DB_PREFIX_ . "pay_transactions WHERE order_id = '" . $db->escape($order_id) . "' AND status = 'PAID'";
+
+        $row = $db->getRow($sql);
+        if (empty($row)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private static function updateTransactionState($transactionId, $statusText)
+    {
+        $db = Db::getInstance();
+
+        $db->update('pay_transactions', array('status' => $statusText),
+            "transaction_id = '" . $db->escape($transactionId) . "'");
+    }
+
+    private static function shouldCancel($transaction_id)
+    {
+        /**
+         * @var $module paynl_paymentmethods
+         */
+        $module = Module::getInstanceByName(Tools::getValue('module'));
+
+        $transaction = self::getTransaction($transaction_id);
+
+        return $module->validateOnStart($transaction['option_id']);
     }
 
 }
