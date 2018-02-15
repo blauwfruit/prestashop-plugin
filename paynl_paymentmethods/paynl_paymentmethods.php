@@ -71,7 +71,7 @@ class paynl_paymentmethods extends PaymentModule {
 
                 $order->total_paid_tax_excl = $order->total_paid_tax_excl + $extraCostsExcl;
 
-                $order->total_paid_tax_incl = $order->total_paid_real = $order->total_paid = $order->total_paid + $extraCosts;
+                $order->total_paid_tax_incl = $order->total_paid = $order->total_paid + $extraCosts;
             }
             $result = $order->addOrderPayment($amount_paid, $payment_method, $extra_vars['transaction_id']);
 
