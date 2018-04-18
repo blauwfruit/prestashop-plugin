@@ -39,9 +39,6 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
      */
     public function initContent()
     {
-
-//        parent::initContent();
-
         $cart = $this->context->cart;
 
         $deliveryAddress = new Address((int)$cart->id_address_delivery);

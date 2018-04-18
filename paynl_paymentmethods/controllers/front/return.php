@@ -66,7 +66,8 @@ class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontControl
 			}
 			if ( $result['state'] == 'CANCEL' ) {
 				if ( ! empty( $result['real_order_id'] ) ) {
-					Tools::redirect( 'index.php?controller=order&submitReorder=Reorder&id_order=' . $result['real_order_id'] );
+				    $cart = new Cart($result['orderId']);
+				    $this->reorder($cart);
 				} else {
 					Tools::redirect( 'index.php?controller=order' );
 				}
@@ -81,6 +82,24 @@ class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontControl
 		}
 	}
 
+	private function reorder($oldCart){
+        $duplication = $oldCart->duplicate();
+        if (!$duplication || !Validate::isLoadedObject($duplication['cart'])) {
+            $this->errors[] = Tools::displayError('Sorry. We cannot renew your order.');
+        } elseif (!$duplication['success']) {
+            $this->errors[] = Tools::displayError('Some items are no longer available, and we are unable to renew your order.');
+        } else {
+            $this->context->cookie->id_cart = $duplication['cart']->id;
+            $context = $this->context;
+            $context->cart = $duplication['cart'];
+            CartRule::autoAddToCart($context);
+            $this->context->cookie->write();
+            if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 1) {
+                Tools::redirect('index.php?controller=order-opc');
+            }
+            Tools::redirect('index.php?controller=order');
+        }
+    }
 	private function resetCart() {
 		/**
 		 * @var $cart CartCore
