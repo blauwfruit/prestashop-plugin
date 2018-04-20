@@ -39,6 +39,7 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
      */
     public function initContent()
     {
+        /** @var CartCore $cart */
         $cart = $this->context->cart;
 
         $deliveryAddress = new Address((int)$cart->id_address_delivery);
@@ -57,25 +58,27 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             exit();
         }
         try {
+            /** @var CurrencyCore $objCurrency */
+            $objCurrency = Currency::getCurrencyInstance((int)$cart->id_currency);
+
             //validate the order
             $customer = new Customer($cart->id_customer);
             $total = (float)$cart->getOrderTotal(true, Cart::BOTH);
+            $totalBase = Tools::convertPrice($total, $objCurrency, false);
 
             $orderStatus = Configuration::get('PAYNL_WAIT');
             $module = $this->module;
 
-            $currencyId = $this->context->currency->id;
 
-            $currencyCode = $this->context->currency->iso_code;
+            $currencyId = $objCurrency->id;
 
-            //$paymentMethodName = $module->getPaymentMethodName($paymentOptionId);
+            $currencyCode = $objCurrency->iso_code;
 
-            $extraFee = $module->getExtraCosts($paymentOptionId, $total);
+            $extraFeeBase = $module->getExtraCosts($paymentOptionId, $totalBase);
+            $extraFee = Tools::convertPrice($extraFeeBase, $objCurrency, true);
 
 
             $total += $extraFee;
-            //$cart->additional_shipping_cost = $extraFee;
-            //$module->validateOrderPay((int) $cart->id, $orderStatus, $total, $extraFee, $module->getPaymentMethodName($paymentOptionId), NULL, array(), (int) $currencyId, false, $customer->secure_key);
 
             $cartId = $cart->id;
 

@@ -77,13 +77,18 @@ class Pay_Helper_Transaction
         if ($stateText == 'PAID') {
             $id_order_state = $statusPaid;
 
+            /** @var CartCore $cart */
             $cart     = new Cart($cartId);
             $customer = new Customer($cart->id_customer);
 
-            $currency = $cart->id_currency;
+            /** @var CurrencyCore $objCurrency */
+            $objCurrency = Currency::getCurrencyInstance((int) $cart->id_currency);
 
             $orderTotal = $cart->getOrderTotal();
-            $extraFee   = $module->getExtraCosts($transaction['option_id'], $orderTotal);
+            $orderTotalBase = Tools::convertPrice($orderTotal, $objCurrency, false);
+
+            $extraFeeBase   = $module->getExtraCosts($transaction['option_id'], $orderTotalBase);
+            $extraFee = Tools::convertPrice($extraFeeBase, $objCurrency, true);
 
             if (isset($cart->additional_shipping_cost)) {
                 $cart->additional_shipping_cost += $extraFee;
@@ -98,7 +103,7 @@ class Pay_Helper_Transaction
 
 
             $module->validateOrderPay((int)$cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, null,
-                array('transaction_id' => $transactionId), (int)$currency, false, $customer->secure_key);
+                array('transaction_id' => $transactionId), (int)$objCurrency->id, false, $customer->secure_key);
 
         } elseif ($stateText == 'CANCEL') {
             // Only cancel if validateOnStart is true
