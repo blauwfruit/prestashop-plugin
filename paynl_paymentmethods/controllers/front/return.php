@@ -101,20 +101,8 @@ class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontControl
         }
     }
 	private function resetCart() {
-		/**
-		 * @var $cart CartCore
-		 */
-		$cart = new Cart();
-
-		$cart->id_customer = (int)($this->context->cookie->id_customer);
-		$cart->id_address_delivery = (int)  (Address::getFirstCustomerAddressId($cart->id_customer));
-		$cart->id_address_invoice = $cart->id_address_delivery;
-		$cart->id_lang = (int)($this->context->cookie->id_lang);
-		$cart->id_currency = (int)($this->context->cookie->id_currency);
-		$cart->add();
-
-		$this->context->cookie->id_cart = (int)($cart->id);
-		$cart->update();
+        unset($this->context->cart);
+        unset($this->context->cookie->id_cart);
 	}
 
 }
