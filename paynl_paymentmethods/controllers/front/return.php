@@ -69,7 +69,7 @@ class paynl_paymentmethodsReturnModuleFrontController extends ModuleFrontControl
 				    $cart = new Cart($result['orderId']);
 				    $this->reorder($cart);
 				} else {
-					Tools::redirect( 'index.php?controller=order' );
+					Tools::redirect( 'index.php?controller=order&step=3' );
 				}
 			}
 			if ( $result['state'] == 'PENDING' ) {
