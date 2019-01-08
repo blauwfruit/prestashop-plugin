@@ -13,7 +13,7 @@ class paynl_paymentmethods extends PaymentModule
     {
         $this->name        = 'paynl_paymentmethods';
         $this->tab         = 'payments_gateways';
-        $this->version     = '3.5.2';
+        $this->version     = '3.5.3';
         $this->_postErrors = array();
         $this->module_key  = '6c2f48f238008e8f68271f5e4763d308';
 
@@ -34,6 +34,27 @@ class paynl_paymentmethods extends PaymentModule
         }
     }
 
+    public function getHighestVatRate(Cart $cart){
+        $highestVatRate = 0;
+        $products = $cart->getProducts();
+        foreach ($products as $product) {
+            $vatAmount = $product['price_wt'] - $product['price'];
+            $vatRate = ($vatAmount/$product['price'])*100;
+            if($vatRate > $highestVatRate) $highestVatRate = $vatRate;
+        }
+
+        //verzendkosten toevoegen
+        $shippingCost = $cart->getTotalShippingCost(null,true);
+        $shippingCost_no_tax = $cart->getTotalShippingCost(null,false);
+        if($shippingCost != 0){
+            $shippingVat = $shippingCost - $shippingCost_no_tax;
+            $vatRate = ($shippingVat/$shippingCost_no_tax)*100;
+            if($vatRate > $highestVatRate) $highestVatRate = $vatRate;
+        }
+
+        return $highestVatRate;
+    }
+
     public function validateOrderPay(
         $id_cart,
         $id_order_state,
@@ -49,6 +70,8 @@ class paynl_paymentmethods extends PaymentModule
     ) {
         $statusPending = Configuration::get('PAYNL_WAIT');
         $statusPaid    = Configuration::get('PAYNL_SUCCESS');
+
+        $cart = new Cart($id_cart);
 
         // Als er nog geen order van dit cartid is, de order valideren.
         $orderId = Order::getOrderByCartId($id_cart);
@@ -77,13 +100,17 @@ class paynl_paymentmethods extends PaymentModule
             $shippingCost = $order->total_shipping;
 
             $newShippingCosts = $shippingCost + $extraCosts;
-            $extraCostsExcl   = round($extraCosts / (1 + (21 / 100)), 2);
+            $highestVatRate = $this->getHighestVatRate($cart);
+
+            $extraCostsExcl   = round($extraCosts / (1 + ($highestVatRate / 100)), 2);
 
             if ($extraCosts != 0) {
                 //als de order extra kosten heeft, moeten deze worden toegevoegd.
                 $order->total_shipping          = $newShippingCosts;
                 $order->total_shipping_tax_excl = $order->total_shipping_tax_excl + $extraCostsExcl;
                 $order->total_shipping_tax_incl = $newShippingCosts;
+                $order->carrier_tax_rate = $highestVatRate;
+
 
                 $order->total_paid_tax_excl = $order->total_paid_tax_excl + $extraCostsExcl;
 

@@ -163,7 +163,7 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
 
             $apiStart->setEnduser($arrEnduser);
 
-            // producten toevoegen
+
             /**
              * @var $cart CartCore
              */
@@ -198,7 +198,9 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             }
 
             if ($extraFee != 0) {
-                $apiStart->addProduct('PAYMENTFEE', 'Betaalkosten', round($extraFee * 100), 1, 'H');
+                $vatRate = $this->module->getHighestVatRate($cart);
+                $vatClass = Pay_Helper::nearestTaxClass($vatRate);
+                $apiStart->addProduct('PAYMENTFEE', 'Betaalkosten', round($extraFee * 100), 1, $vatClass);
             }
 
 
