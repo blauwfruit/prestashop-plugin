@@ -127,7 +127,7 @@ class Pay_Helper {
     {
         $taxClasses = array(
             0 => 'N',
-            6 => 'L',
+            9 => 'L',
             21 => 'H'
         );
         // return 0 if amount or tax is 0
