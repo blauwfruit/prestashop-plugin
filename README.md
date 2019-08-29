@@ -29,12 +29,12 @@ Bank Transfer | Cartasi | GivaCard | SprayPay | Przelewy24 |
 
 ##### Installing
 
-Download the latest .tgz release and upload into *Modules* > *Module Manager* > *Upload a module*
+Download the latest .tgz release and upload into *Modules and Services* > *Modules and Services* > *Add a new module*
 
 ##### Setup
 
 1. Log into the PrestaShop admin
-2. Go to *Modules* > *Module Manager*
+2. Go to *Modules and Services* > *Modules and Services*
 3. Scroll down or search for Pay.nl
 4. Click Configure
 5. Enter the API token and serviceID (these can be found in the Pay.nl Admin Panel --> https://admin.pay.nl/programs/programs
