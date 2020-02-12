@@ -68,7 +68,7 @@ class Pay_Helper_Transaction
         }
 
         if ($stateText == 'PAID') {
-            $id_order_state =  Configuration::get('PAYNL_SUCCESS');
+            $id_order_state = Configuration::get('PAYNL_SUCCESS');
 
             /** @var CartCore $cart */
             $cart     = new Cart($cartId);
@@ -95,8 +95,6 @@ class Pay_Helper_Transaction
             $module->validateOrderPay((int)$cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, null,
                 array('transaction_id' => $transactionId), (int)$objCurrency->id, false, $customer->secure_key);
 
-            self::updateTransactionState($transactionId, $stateText);
-
         } elseif ($stateText == 'CANCEL') {
             // Only cancel if validateOnStart is true
 
@@ -116,9 +114,9 @@ class Pay_Helper_Transaction
                 $history->changeIdOrderState((int)Configuration::get('PAYNL_CANCEL'), $objOrder);
                 $history->addWithemail();
             }
-
-            self::updateTransactionState($transactionId, $stateText);
         }
+
+        self::updateTransactionState($transactionId, $stateText);
 
         $real_order_id = Order::getOrderByCartId($cartId);
         return array(
