@@ -45,9 +45,8 @@ class Pay_Api_Start extends Pay_Api {
     public function setObject($object){
         $this->_object = $object;
     }
-    public function setOrderNumber($ordernumber)
-    {
-      $this->_ordernumber = $ordernumber;
+    public function setOrderNumber($ordernumber) {
+        $this->_ordernumber = $ordernumber;
     }
 
     public function setTransferData($transferData){
