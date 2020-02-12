@@ -130,14 +130,14 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             }
 
             $arrEnduser['emailAddress'] = $customer->email;
-
+            $arrEnduser['gender'] = $customer->id_gender == 2 ? 'F' : 'M';
 
             // delivery address
             $arrAddress = array();
             $strAddress = $deliveryAddress->address1 . $deliveryAddress->address2;
             $arrStreetHouseNr = Pay_Helper::splitAddress($strAddress);
             $arrAddress['streetName'] = $arrStreetHouseNr[0];
-            $arrAddress['streetNumber'] = substr($arrStreetHouseNr[1],0,44);
+            $arrAddress['streetNumber'] = !empty($arrStreetHouseNr[1]) ? substr($arrStreetHouseNr[1],0,44) : '';
             $arrAddress['zipCode'] = $deliveryAddress->postcode;
             $arrAddress['city'] = $deliveryAddress->city;
             $country = new Country($deliveryAddress->id_country);
@@ -153,7 +153,7 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             $strAddress = $invoiceAddress->address1 . $invoiceAddress->address2;
             $arrStreetHouseNr = Pay_Helper::splitAddress($strAddress);
             $arrAddress['streetName'] = $arrStreetHouseNr[0];
-            $arrAddress['streetNumber'] = substr($arrStreetHouseNr[1],0,44);
+            $arrAddress['streetNumber'] = !empty($arrStreetHouseNr[1]) ? substr($arrStreetHouseNr[1],0,44) : '';
             $arrAddress['zipCode'] = $invoiceAddress->postcode;
             $arrAddress['city'] = $invoiceAddress->city;
             $country = new Country($invoiceAddress->id_country);
@@ -212,18 +212,16 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             $apiStart->setDescription($description);
             $apiStart->setExtra1('CartId: ' . $cart->id);
             $apiStart->setObject('prestashop16 ' . $module->getVersion());
+            $apiStart->setOrderNumber($cart->id);
 
             $apiStart->setPaymentOptionId($paymentOptionId);
 
             $finishUrl = Context::getContext()->link->getModuleLink('paynl_paymentmethods', 'return');
             $exchangeUrl = Context::getContext()->link->getModuleLink('paynl_paymentmethods', 'exchange');
 
-
             $apiStart->setFinishUrl($finishUrl);
             $apiStart->setExchangeUrl($exchangeUrl);
-
             $apiStart->setAmount(round($total * 100));
-
             $apiStart->setCurrency($currencyCode);
 
             $result = $apiStart->doRequest();
@@ -239,7 +237,6 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
 
             Tools::redirect($result['transaction']['paymentURL']);
 
-//$url = $paynl->startTransaction($cart);
         } catch (Exception $e) {
             echo $e->getMessage();
         }
