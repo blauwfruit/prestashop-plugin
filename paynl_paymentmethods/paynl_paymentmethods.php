@@ -34,6 +34,11 @@ class paynl_paymentmethods extends PaymentModule
         }
     }
 
+    public function getVersion()
+    {
+      return $this->version;
+    }
+
     public function getHighestVatRate(Cart $cart){
         $highestVatRate = 0;
         $products = $cart->getProducts();
