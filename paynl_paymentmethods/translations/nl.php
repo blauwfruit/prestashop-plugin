@@ -2,8 +2,8 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_4ea713b9ffdda58ce48ccec052e29fd6'] = 'Pay.nl betaalmethoden';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_da11e586f68cd9528c0c16328cdf9f5f'] = 'Acepteer betalingen via Pay.nl';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_4ea713b9ffdda58ce48ccec052e29fd6'] = 'PAY. betaalmethoden';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_da11e586f68cd9528c0c16328cdf9f5f'] = 'Accepteer betalingen via PAY.';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_69a1a3ad8dd5da6db3c4da838a0cf9c7'] = 'Weet je zeker dat je de gegevens wilt verwijderen?';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_f4d1ea475eaa85102e2b4e6d95da84bd'] = 'Bevestiging';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_c888438d14855d7d96a2724ee9c306bd'] = 'Instellingen opgeslagen';
@@ -11,7 +11,7 @@ $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_6357d3551190ec7
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_4ce81305b7edb043d0a7a5c75cab17d0'] = 'Er is';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_07213a0161f52846ab198be103b5ab43'] = 'Fouten';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_cb5e100e5a9a3e7f6d1fd97512215282'] = 'Fout';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_2a7f0f0dda13226e03ae1c8c7fbebcaa'] = 'Met deze module kan je betalingen accepteren via Pay.nl';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_2a7f0f0dda13226e03ae1c8c7fbebcaa'] = 'Met deze module kan je betalingen accepteren via PAY.';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_b44454331645c7abacf93973e3e9441e'] = 'Betaalmethode beperkingen (per land)';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_59716c97497eb9694541f7c3d37b1a4d'] = 'Land';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_0da8d9a75492046bea7f314521e07cae'] = 'Betaalmethoden';
