@@ -475,7 +475,7 @@ class paynl_paymentmethods extends PaymentModule
     public function displayPaynl()
     {
         $this->_html .= '
-    <img src="https://www.pay.nl/uploads/1/brands/main_logo.png" style="float:left; margin-right:15px;" />
+    <img src="https://static.pay.nl/generic/images/200x200/logo.png" style="float:left; margin-right:15px;" />
     <b>' . $this->l('This module allows you to accept payments by PAY..') . '</b>
     <br /><br /><br />';
     }
