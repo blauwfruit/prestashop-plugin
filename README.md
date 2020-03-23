@@ -1,4 +1,4 @@
-# Pay.nl PrestaShop plugin
+# PAY. PrestaShop plugin
 
 ---
 - [Summary](#summary)
@@ -8,7 +8,7 @@
 ---
 ### Summary
 
-With this plug-in by Pay.nl you can easily add all desired payment methods to your PrestaShop webshop. Please refer to https://www.pay.nl (Dutch) for an overview of all features and services. 
+With this plug-in by PAY. you can easily add all desired payment methods to your PrestaShop webshop. Please refer to https://www.pay.nl (Dutch) for an overview of all features and services. 
 
 ##### Available payment methods:
 
@@ -35,11 +35,11 @@ Download the latest .tgz release and upload into *Modules and Services* > *Modul
 
 1. Log into the PrestaShop admin
 2. Go to *Modules and Services* > *Modules and Services*
-3. Scroll down or search for Pay.nl
+3. Scroll down or search for PAY.
 4. Click Configure
-5. Enter the API token and serviceID (these can be found in the Pay.nl Admin Panel --> https://admin.pay.nl/programs/programs
+5. Enter the API token and serviceID (these can be found in the PAY. Admin Panel --> https://admin.pay.nl/programs/programs
 6. Save the settings
 7. Enable the desired payment methods
 8. Save the settings
 
-Go to the *Manage* > *Services* tab in the Pay.nl Admin Panel to enable extra payment methods
+Go to the *Manage* > *Services* tab in the PAY. Admin Panel to enable extra payment methods

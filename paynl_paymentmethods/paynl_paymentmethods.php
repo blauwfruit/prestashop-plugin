@@ -13,7 +13,7 @@ class paynl_paymentmethods extends PaymentModule
     {
         $this->name        = 'paynl_paymentmethods';
         $this->tab         = 'payments_gateways';
-        $this->version     = '3.5.3';
+        $this->version     = '3.5.4';
         $this->_postErrors = array();
         $this->module_key  = '6c2f48f238008e8f68271f5e4763d308';
 
@@ -23,8 +23,8 @@ class paynl_paymentmethods extends PaymentModule
         parent::__construct();
 
         $this->page             = basename(__FILE__, '.php');
-        $this->displayName      = $this->l('Pay.nl Payment methods');
-        $this->description      = $this->l('Accept payments by Pay.nl');
+        $this->displayName      = $this->l('PAY. Payment methods');
+        $this->description      = $this->l('Accept payments by PAY.');
         $this->confirmUninstall = $this->l('Are you sure you want to delete your details?');
 
         if (Tools::getValue('id_order')) {
@@ -475,8 +475,8 @@ class paynl_paymentmethods extends PaymentModule
     public function displayPaynl()
     {
         $this->_html .= '
-    <img src="../modules/paynl_paymentmethods/pay.nl.logo.gif" height="20%" width="20%" style="float:left; margin-right:15px;" />
-    <b>' . $this->l('This module allows you to accept payments by Pay.nl.') . '</b>
+    <img src="https://static.pay.nl/generic/images/200x200/logo.png" style="float:left; margin-right:15px;" />
+    <b>' . $this->l('This module allows you to accept payments by PAY..') . '</b>
     <br /><br /><br />';
     }
 
@@ -730,7 +730,7 @@ class paynl_paymentmethods extends PaymentModule
             $exceptions .= '</table>';
         } catch (Exception $ex) {
             $exceptions = '<br /><h2 class="space">' . $this->l('Payment restrictions') . '</h2>' .
-                          '<br />' . $this->l('Payment restrictions available after connecting to Pay.nl');
+                          '<br />' . $this->l('Payment restrictions available after connecting to PAY.');
         }
 
 
