@@ -24,9 +24,10 @@ class Pay_Api_Start extends Pay_Api {
     private $_info;
     private $_tool;
     private $_object;
+    private $_ordernumber;
     private $_domainId;
     private $_transferData;
-    
+
     private $_products = array();
 
     public function setCurrency($currency){
@@ -44,7 +45,10 @@ class Pay_Api_Start extends Pay_Api {
     public function setObject($object){
         $this->_object = $object;
     }
- 
+    public function setOrderNumber($ordernumber) {
+        $this->_ordernumber = $ordernumber;
+    }
+
     public function setTransferData($transferData){
         $this->_transferData = $transferData;
     }
@@ -232,11 +236,12 @@ class Pay_Api_Start extends Pay_Api {
         if (!empty($this->_exchangeUrl)) {    
             $data['transaction']['orderExchangeUrl'] = $this->_exchangeUrl;
         }
-
         if (!empty($this->_description)) {
             $data['transaction']['description'] = $this->_description;
         }
-
+        if (!empty($this->_ordernumber)) {
+            $data['transaction']['orderNumber'] = $this->_ordernumber;
+        }
         if (!empty($this->_paymentOptionSubId)) {
             $data['paymentOptionSubId'] = $this->_paymentOptionSubId;
         }
@@ -269,6 +274,7 @@ class Pay_Api_Start extends Pay_Api {
         if (!empty($this->_enduser)) {
             $data['enduser'] = $this->_enduser;
         }
+
 
          if (!empty($this->_extra1)) {
             $data['statsData']['extra1'] = $this->_extra1;
