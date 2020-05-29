@@ -27,7 +27,8 @@ class paynl_paymentmethods extends PaymentModule
         $this->description      = $this->l('Accept payments by PAY.');
         $this->confirmUninstall = $this->l('Are you sure you want to delete your details?');
 
-        if (Tools::getValue('id_order')) {
+        if (Tools::getValue('id_order'))
+        {
             $id_order          = (int)Tools::getValue('id_order');
             $order             = new Order($id_order);
             $this->displayName = $order->payment;
@@ -392,7 +393,6 @@ class paynl_paymentmethods extends PaymentModule
     {
         $this->_html = '<h2>' . $this->displayName . '</h2>';
 
-
         if (isset($_POST['submitPaynl'])) {
             if ( ! isset($_POST['api'])) {
                 $_POST['api'] = 1;
@@ -480,7 +480,7 @@ class paynl_paymentmethods extends PaymentModule
     public function displayPaynl()
     {
         $this->_html .= '
-    <img src="https://static.pay.nl/generic/images/200x200/logo.png" style="float:left; margin-right:15px;" />
+    <img src="https://static.pay.nl/generic/images/100x100/logo.png" style="margin-top:-49px; right:62px;position: absolute;" />
     <b>' . $this->l('This module allows you to accept payments by PAY..') . '</b>
     <br /><br /><br />';
     }
@@ -640,41 +640,42 @@ class paynl_paymentmethods extends PaymentModule
             }
 
 
-            $exceptions = '<br /><h2 class="space">' . $this->l('Payment restrictions') . '</h2>';
-            $exceptions .= '<table border="1"><tr><th>' . $this->l('Country') . '</th><th colspan="' . count($profiles) . '">' . $this->l('Payment methods') . '</th></tr>';
-            $exceptions .= '<tr><td>&nbsp;</td>';
-            foreach ($profiles as $profile) {
-                $exceptions .= '<td>' . $profile['name'] . '</td>';
+          $exceptions .= '<br /><h2 class="space">' . $this->l('Payment restrictions') . '</h2>';
+          $exceptions .= '<table style="min-width: 30%;border-color: rgba(0,0,0,0.2)" border="1"><thead>';
+          $exceptions .= '<tr><th>&nbsp;</th>';
+
+          foreach ($countries as $countryid => $country) {
+            if (!isset($this->country[$countryid])) {
+              continue;
             }
-            $exceptions .= '</tr>';
+            $exceptions .= '<th>' . $country['name'] . '</th>';
+          }
+
+          $exceptions .= '</tr></thead><tbody>';
+
+          foreach ($profiles as $profile) {
+            $exceptions .= '<tr>';
+            $exceptions .= '<td style="padding:2px">' . $profile['name'] . '</td>';
 
             foreach ($countries as $countryid => $country) {
-                if ( ! isset($this->country[$countryid])) {
-                    continue;
-                }
-
-
-                $exceptions .= "<tr><td>" . $country['name'] . "</td>";
-
-                foreach ($profiles as $profile) {
-                    $exceptions .= "<td>";
-
-                    if ( ! $forceProfilesEnable) {
-
-                        $exceptions .= '<input type="checkbox" name="enaC[' . $countryid . '][' . $profile['id'] . ']" value="' . $profile['name'] . '"' . (isset($profilesEnable[$countryid][$profile['id']]) ? ' checked="checked"' : '') . ' />';
-                    } else {
-                        $exceptions .= '<input type="checkbox" name="enaC[' . $countryid . '][' . $profile['id'] . ']" value="' . $profile['name'] . '" checked="checked" />';
-                    }
-
-                    $exceptions .= '</td>';
-                }
-                $exceptions .= "</tr>";
+              if (!isset($this->country[$countryid])) {
+                continue;
+              }
+              $exceptions .= '<td>';
+              $exceptions .= '<input type="checkbox" name="enaC[' . $countryid . '][' . $profile['id'] . ']" value="' . $profile['name'] . '"';
+              if (!$forceProfilesEnable) {
+                $exceptions .= (isset($profilesEnable[$countryid][$profile['id']]) ? ' checked="checked"' : '') . ' />';
+              } else {
+                $exceptions .= ' checked="checked" />';
+              }
+              $exceptions .= '</td>';
             }
-            $exceptions .= "</table>";
+            $exceptions .= '</tr>';
+          }
+          $exceptions .= '</tbody></table>';
 
-            $exceptions .= '<br /><h2 class="space">' . $this->l('Payment priority') . '</h2>';
-            $exceptions .= '<p>' . $this->l('Lower priority is more important') . '</p>';
-            $exceptions .= '<table border="1"><tr><th>' . $this->l('Payment method') . '</th><th>' . $this->l('Order') . '</th>';
+            $exceptions .= '<br /><h2 class="space">' . $this->l('Payment settings') . '</h2>';
+            $exceptions .= '<table border="1"><tr><th>' . $this->l('Payment method') . '</th><th>' . $this->l('Sequence') . '</th>';
             $exceptions .= '<th>' . $this->l('Min. amount') . '</th>';
             $exceptions .= '<th>' . $this->l('Max. amount') . '</th>';
             $exceptions .= '<th>' . $this->l('Extra costs fixed') . '</th>';
