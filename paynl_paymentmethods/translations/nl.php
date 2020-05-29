@@ -2,8 +2,8 @@
 
 global $_MODULE;
 $_MODULE = array();
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_4ea713b9ffdda58ce48ccec052e29fd6'] = 'PAY. betaalmethoden';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_da11e586f68cd9528c0c16328cdf9f5f'] = 'Accepteer betalingen via PAY.';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_47c0c145e99f28d3e24186c495c34f2f'] = 'PAY. Betaalmethoden';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_75fa4d53e7339dd2ac7697dc441b59b3'] = 'Betalingen via PAY.';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_69a1a3ad8dd5da6db3c4da838a0cf9c7'] = 'Weet je zeker dat je de gegevens wilt verwijderen?';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_f4d1ea475eaa85102e2b4e6d95da84bd'] = 'Bevestiging';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_c888438d14855d7d96a2724ee9c306bd'] = 'Instellingen opgeslagen';
@@ -11,14 +11,11 @@ $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_6357d3551190ec7
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_4ce81305b7edb043d0a7a5c75cab17d0'] = 'Er is';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_07213a0161f52846ab198be103b5ab43'] = 'Fouten';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_cb5e100e5a9a3e7f6d1fd97512215282'] = 'Fout';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_2a7f0f0dda13226e03ae1c8c7fbebcaa'] = 'Met deze module kan je betalingen accepteren via PAY.';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_697b34cd8b666719a2a6ea45fe2b396e'] = 'Met deze module configureert u de PAY. betaalmethoden';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_b44454331645c7abacf93973e3e9441e'] = 'Betaalmethode beperkingen (per land)';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_59716c97497eb9694541f7c3d37b1a4d'] = 'Land';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_0da8d9a75492046bea7f314521e07cae'] = 'Betaalmethoden';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_6d83fe3c2593f45274a02e4a30d873bc'] = 'Prioriteit';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_7c07e4dabdbfc97696f3e793b4ef844b'] = 'Lager getal betekend belangrijker';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_f1a9672d88ab0cae23402867e2def274'] = 'Configuratie';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_f0aaaae189e9c7711931a65ffcd22543'] = 'Betaalmethode';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_a240fa27925a635b08dc28c9e4f9216d'] = 'Bestelling';
+$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_3ff39d3acb327553070a64ef0cb321d5'] = 'Volgorde';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_4457f1b3cf95b38c6934bec26b2c9d20'] = 'Min. bedrag';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_bb47226c752434972106b23f86eff56b'] = 'Max. bedrag';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_09a9ee6692aff45ed9a3bb1c4767c969'] = 'Extra kosten vast';
@@ -26,7 +23,6 @@ $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_489acbfc9724eb9
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_5632f21957d92c5caa6bd0434ec69d80'] = 'Extra kosten max';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_1b3964c4f3c9d1ae68b527438d77ccf5'] = 'Valideer bij starten transactie';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_502996d9790340c5fd7b86a5b93b1c9f'] = 'Prioriteit';
-$_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_f3acb6766cb169e128744166cb9aed80'] = 'Betaalmethode beperkingen zijn in te stellen nadat u uw gegevens heeft ingevuld';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_f4f70727dc34561dfde1a3c529b6205c'] = 'Instellingen';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_459a6f79ad9b13cbcb5f692d2cc7a94d'] = 'APItoken';
 $_MODULE['<{paynl_paymentmethods}prestashop>paynl_paymentmethods_0612c008c0ceac34b53b5ca6a5ac4814'] = 'ServiceId';

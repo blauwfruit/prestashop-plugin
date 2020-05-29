@@ -27,8 +27,7 @@ class paynl_paymentmethods extends PaymentModule
         $this->description      = $this->l('Accept payments by PAY.');
         $this->confirmUninstall = $this->l('Are you sure you want to delete your details?');
 
-        if (Tools::getValue('id_order'))
-        {
+        if (Tools::getValue('id_order')) {
             $id_order          = (int)Tools::getValue('id_order');
             $order             = new Order($id_order);
             $this->displayName = $order->payment;
