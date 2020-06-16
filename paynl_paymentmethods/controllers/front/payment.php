@@ -229,11 +229,11 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             Pay_Helper_Transaction::addTransaction($result['transaction']['transactionId'], $paymentOptionId, round($total * 100), $currencyCode, $cartId, $startData);
 
             if ($this->module->validateOnStart($paymentOptionId)) {
-                Pay_Helper::paylog('Payment start: (pre)validateOrderPay. Amount: '. $total, $result['transaction']['transactionId']);
+                Pay_Helper::payLog('Payment start: (pre)validateOrderPay. Amount: '. $total, $result['transaction']['transactionId'], $cartId);
                 $module->validateOrderPay((int)$cart->id, $statusPending, $total, $extraFee, $module->getPaymentMethodName($paymentOptionId), NULL, array('transaction_id' => $result['transaction']['transactionId']), (int)$currencyId, false, $customer->secure_key);
             }
             else {
-                Pay_Helper::paylog('Payment initiated. Amount: ' . $total . '. Extrafee: ' . $extraFee, $result['transaction']['transactionId']);
+                Pay_Helper::payLog('Payment initiated. Amount: ' . $total . '. Extrafee: ' . $extraFee, $result['transaction']['transactionId'], $cartId);
             }
 
             Tools::redirect($result['transaction']['paymentURL']);

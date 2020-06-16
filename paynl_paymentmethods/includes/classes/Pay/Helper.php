@@ -190,6 +190,7 @@ class Pay_Helper {
             $strMessage .= empty($transactionId) ? ' : ' : ' [ ' . $transactionId . ' ] ';
             $strMessage .= empty($cartid) ? ' : ' : ' [ ' . $cartid . ' ] ';
             $strMessage .= $strText;
+
             PrestaShopLogger::addLog($strMessage);
         }
     }

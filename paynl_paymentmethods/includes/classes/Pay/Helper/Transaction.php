@@ -32,12 +32,12 @@ class Pay_Helper_Transaction
         }
 
         $stateText = self::getStateText($stateId);
-        Pay_Helper::paylog('ProcessTransaction '.  ($dry_run ? '(dry-run)':'')  .' : pay-order-status ' . $stateId . ' (' . $stateText . ')', $transactionId);
+        Pay_Helper::payLog('ProcessTransaction '.  ($dry_run ? '(dry-run)':'')  .' : pay-order-status ' . $stateId . ' (' . $stateText . ')', $transactionId);
         //de transactie ophalen
         try {
             $transaction = self::getTransaction($transactionId);
         } catch (Pay_Exception $ex) {
-            Pay_Helper::paylog('ProcessTransaction: local pay transaction not found ' . $ex->getMessage(), $transactionId);
+            Pay_Helper::payLog('ProcessTransaction: local pay transaction not found ' . $ex->getMessage(), $transactionId);
 
             // transactie is niet gevonden... quickfix, we voegen hem opnieuw toe
             self::addTransaction($transactionId, $result['paymentDetails']['paymentOptionId'],
@@ -102,8 +102,7 @@ class Pay_Helper_Transaction
             $paymentMethodName = $module->getPaymentMethodName($transaction['option_id']);
             $paidAmount = $transactionAmount / 100;
 
-
-            Pay_Helper::paylog('ProcessTransaction: validateOrderPay', $transactionId, $cart->id);
+            Pay_Helper::payLog('ProcessTransaction: validateOrderPay', $transactionId, $cart->id);
 
             # When order is already created (validated), then this will set this order to paid.
             $module->validateOrderPay((int)$cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, null, array('transaction_id' => $transactionId), (int)$objCurrency->id, false, $customer->secure_key);
