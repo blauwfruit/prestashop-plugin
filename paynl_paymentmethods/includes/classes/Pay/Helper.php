@@ -185,7 +185,7 @@ class Pay_Helper {
      */
     public static function payLog($strText, $transactionId = null, $cartid = null)
     {
-        if (Configuration::get('PAYNL_CANCEL') == 1) {
+        if (Configuration::get('PAYNL_LOGGING') == 1) {
             $strMessage = 'PAY.';
             $strMessage .= empty($transactionId) ? ' : ' : ' [ ' . $transactionId . ' ] ';
             $strMessage .= empty($cartid) ? ' : ' : ' [ ' . $cartid . ' ] ';
