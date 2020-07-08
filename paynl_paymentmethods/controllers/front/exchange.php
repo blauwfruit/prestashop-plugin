@@ -33,7 +33,9 @@ class paynl_paymentmethodsExchangeModuleFrontController extends ModuleFrontContr
 	{
             $transactionId = Tools::getValue('order_id');
             $action = Tools::getValue('action');
-           
+
+            Pay_Helper::payLog('Exchange incoming: ' . $action, $transactionId);
+
             try{
                 if(strpos($action, 'refund') !== false){
                 	die('TRUE| Ignoring refund');
@@ -43,15 +45,20 @@ class paynl_paymentmethodsExchangeModuleFrontController extends ModuleFrontContr
                 }
                 $result = Pay_Helper_Transaction::processTransaction($transactionId);
             } catch (Pay_Exception_Notice $ex) {
+                Pay_Helper::payLog('Exchange exception notice: ' . $ex->getMessage(), $transactionId);
                 echo "TRUE| ";
                 echo $ex->getMessage();
                 die();
             } catch (Exception $ex) {
+                Pay_Helper::payLog('Exchange exception: ' . $ex->getMessage(), $transactionId);
                 echo "FALSE| ";
                 echo $ex->getMessage();
                 die();
             }
-            echo 'TRUE| Status updated to '.$result['state']. ' for cartId: '.$result['orderId'].' orderId: '.@$result['real_order_id'];
+            $response = 'TRUE| Status updated to ' . $result['state'] . ' for cartId: ' . $result['orderId'] . ' orderId: ' . @$result['real_order_id'];
+            Pay_Helper::payLog('Exchange response: ' . $response, $transactionId);
+
+            echo $response;
             die();
 	}
 }

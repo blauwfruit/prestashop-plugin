@@ -4,7 +4,7 @@ class Pay_Helper {
 
     /**
      * Get the status by statusId
-     * 
+     *
      * @param int $statusId
      * @return string The status
      */
@@ -57,7 +57,7 @@ class Pay_Helper {
 
     /**
      * Find out if the connection is secure
-     * 
+     *
      * @return boolean Secure
      */
     public static function isSecure() {
@@ -72,31 +72,31 @@ class Pay_Helper {
     /**
      * Get the uri of the current script without the filename.
      * We use this to generate the return- and exchangeurl
-     * 
+     *
      * @return string The uri
      */
-    public static function getUri(){        
+    public static function getUri(){
         if(self::isSecure()){
             $uri='https://';
         } else {
             $uri='http://';
         }
-        
+
         $uri .= $_SERVER['SERVER_NAME'];
-        
+
         if(!empty($_SERVER['REQUEST_URI'])){
             $uri .= $_SERVER['REQUEST_URI'];
             $uriDir = $uri;
             if(substr($uri, -4) == '.php'){
                 $uriDir = dirname($uri);
             }
-            
-            
+
+
             if($uriDir != 'http:' && $uriDir != 'https:'){
                 $uri = $uriDir;
             }
         }
-        
+
         return $uri.'/';
     }
     public static function splitAddress($strAddress) {
@@ -166,17 +166,35 @@ class Pay_Helper {
         }
         return $output;
     }
-    
+
     /**
      * Sort the paymentoptions by name
-     * 
+     *
      * @param array $paymentOptions
      * @return array
      */
     public static function sortPaymentOptions($paymentOptions){
         uasort($paymentOptions, 'sortPaymentOptions');
         return $paymentOptions;
-    }   
+    }
+
+    /**
+     * @param $strText
+     * @param null $transactionId
+     * @param null $cartid
+     */
+    public static function payLog($strText, $transactionId = null, $cartid = null)
+    {
+        if (Configuration::get('PAYNL_LOGGING') == 1) {
+            $strMessage = 'PAY.';
+            $strMessage .= empty($transactionId) ? ' : ' : ' [ ' . $transactionId . ' ] ';
+            $strMessage .= empty($cartid) ? ' : ' : ' [ ' . $cartid . ' ] ';
+            $strMessage .= $strText;
+
+            PrestaShopLogger::addLog($strMessage);
+        }
+    }
+
 }
 function sortPaymentOptions($a,$b){
     return strcmp($a['name'], $b['name']);

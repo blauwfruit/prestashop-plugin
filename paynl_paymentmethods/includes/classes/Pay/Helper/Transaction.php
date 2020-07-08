@@ -32,11 +32,13 @@ class Pay_Helper_Transaction
         }
 
         $stateText = self::getStateText($stateId);
-
+        Pay_Helper::payLog('ProcessTransaction '.  ($dry_run ? '(dry-run)':'')  .' : pay-order-status ' . $stateId . ' (' . $stateText . ')', $transactionId);
         //de transactie ophalen
         try {
             $transaction = self::getTransaction($transactionId);
         } catch (Pay_Exception $ex) {
+            Pay_Helper::payLog('ProcessTransaction: local pay transaction not found ' . $ex->getMessage(), $transactionId);
+
             // transactie is niet gevonden... quickfix, we voegen hem opnieuw toe
             self::addTransaction($transactionId, $result['paymentDetails']['paymentOptionId'],
                 $result['paymentDetails']['amount'], $result['paymentDetails']['paidCurrency'],
@@ -77,6 +79,14 @@ class Pay_Helper_Transaction
             /** @var CurrencyCore $objCurrency */
             $objCurrency = Currency::getCurrencyInstance((int) $cart->id_currency);
 
+            $real_order_id = Order::getOrderByCartId($orderId);
+            $order = new Order($real_order_id);
+            $currentorderstate = $order->getCurrentOrderState();
+
+            if ($currentorderstate->paid == '1') {
+                throw new Pay_Exception_Notice('Order paid already');
+            }
+
             $orderTotal = $cart->getOrderTotal();
             $orderTotalBase = Tools::convertPrice($orderTotal, $objCurrency, false);
 
@@ -92,8 +102,10 @@ class Pay_Helper_Transaction
             $paymentMethodName = $module->getPaymentMethodName($transaction['option_id']);
             $paidAmount = $transactionAmount / 100;
 
-            $module->validateOrderPay((int)$cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, null,
-                array('transaction_id' => $transactionId), (int)$objCurrency->id, false, $customer->secure_key);
+            Pay_Helper::payLog('ProcessTransaction: validateOrderPay', $transactionId, $cart->id);
+
+            # When order is already created (validated), then this will set this order to paid.
+            $module->validateOrderPay((int)$cart->id, $id_order_state, $paidAmount, $extraFee, $paymentMethodName, null, array('transaction_id' => $transactionId), (int)$objCurrency->id, false, $customer->secure_key);
 
         } elseif ($stateText == 'CANCEL') {
             // Only cancel if validateOnStart is true
@@ -101,7 +113,7 @@ class Pay_Helper_Transaction
             $real_order_id = Order::getOrderByCartId($cartId);
 
             if ( ! self::shouldCancel($transactionId)) {
-                throw new Pay_Exception_Notice('Not cancelling because an order should not have been made by this method');
+                throw new Pay_Exception_Notice('Cancel');
             }
 
             if ($real_order_id) {

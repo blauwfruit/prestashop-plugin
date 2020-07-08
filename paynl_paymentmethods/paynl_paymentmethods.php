@@ -404,6 +404,7 @@ class paynl_paymentmethods extends PaymentModule
                 Configuration::updateValue('PAYNL_WAIT', $_POST['wait']);
                 Configuration::updateValue('PAYNL_SUCCESS', $_POST['success']);
                 Configuration::updateValue('PAYNL_CANCEL', $_POST['cancel']);
+                Configuration::updateValue('PAYNL_LOGGING', $_POST['logging']);
                 if (isset($_POST['enaC'])) {
                     Configuration::updateValue('PAYNL_COUNTRY_EXCEPTIONS', serialize($_POST['enaC']));
                 }
@@ -502,6 +503,7 @@ class paynl_paymentmethods extends PaymentModule
         $arrConfig[] = 'PAYNL_PAYMENT_METHOD_NAME';
         $arrConfig[] = 'PAYNL_PAYMENT_MIN';
         $arrConfig[] = 'PAYNL_PAYMENT_MAX';
+        $arrConfig[] = 'PAYNL_LOGGING';
 
         $conf = Configuration::getMultiple($arrConfig);
 
@@ -568,6 +570,17 @@ class paynl_paymentmethods extends PaymentModule
             }
         }
         $osCancel .= '</select>';
+
+        $osLogging = '<select name="logging">';
+
+        $logStates = array(0 => $this->l('Disabled'), 1 => $this->l('Enabled'));
+
+        foreach ($logStates as $stateVal => $stateText) {
+            $selected = $conf['PAYNL_LOGGING'] == $stateVal ? ' selected' : '';
+            $osLogging .= '<option value="' . $stateVal . '"' . $selected . '>' . $stateText . '</option>';
+        }
+        $osLogging .= '</select>';
+
 
         $countries = DB::getInstance()->ExecuteS('SELECT id_country FROM ' . _DB_PREFIX_ . 'module_country WHERE id_module = ' . (int)($this->id));
         foreach ($countries as $country) {
@@ -762,6 +775,9 @@ class paynl_paymentmethods extends PaymentModule
       <div class="margin-form">' . $osSuccess . '</div>
       <label>' . $this->l('Cancel') . '</label>
       <div class="margin-form">' . $osCancel . '</div>
+      <label>' . $this->l('Log process information') . '</label>
+      <div class="margin-form">' . $osLogging . '</div>
+
       <br />'
                         . $exceptions .
                         '<br /><center><input type="submit" name="submitPaynl" value="' . $this->l('Update settings') . '" class="button" /></center>
