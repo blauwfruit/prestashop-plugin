@@ -8,7 +8,7 @@
 ---
 ### Summary
 
-With this plug-in by PAY. you can easily add all desired payment methods to your PrestaShop webshop. Please refer to https://www.pay.nl (Dutch) for an overview of all features and services. 
+With this plug-in by PAY. you can easily add all desired payment methods to your PrestaShop 1.6 webshop. Please refer to https://www.pay.nl (Dutch) for an overview of all features and services. 
 
 ##### Available payment methods:
 
