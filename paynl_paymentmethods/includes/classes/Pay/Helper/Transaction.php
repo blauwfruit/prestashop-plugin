@@ -113,6 +113,14 @@ class Pay_Helper_Transaction
                 $history->id_order = (int)$objOrder->id;
                 $history->changeIdOrderState((int)Configuration::get('PAYNL_CANCEL'), $objOrder);
                 $history->addWithemail();
+
+                if (Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT') && $objOrder && !empty($objOrder->getProducts())) {
+                    foreach ($objOrder->getProducts() as $product) {
+                        if (StockAvailable::dependsOnStock($product['product_id'])) {
+                            StockAvailable::synchronize($product['product_id'], (int)$product['id_shop']);
+                        }
+                    }
+                }
             }
         }
 
