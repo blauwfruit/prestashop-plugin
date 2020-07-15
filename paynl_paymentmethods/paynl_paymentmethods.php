@@ -13,7 +13,7 @@ class paynl_paymentmethods extends PaymentModule
     {
         $this->name        = 'paynl_paymentmethods';
         $this->tab         = 'payments_gateways';
-        $this->version     = '3.5.5';
+        $this->version     = '3.5.6';
         $this->_postErrors = array();
         $this->module_key  = '6c2f48f238008e8f68271f5e4763d308';
 
@@ -257,23 +257,21 @@ class paynl_paymentmethods extends PaymentModule
             $apiGetservice->setApiToken($token);
             $apiGetservice->setServiceId($serviceId);
 
+            $paymentaddress = new Address($params['cart']->id_address_invoice);
+            $countryid      = $paymentaddress->id_country;
+            $activeProfiles = array();
+
+            # Only show the paymentmethods which are selected in the settings of the PAY. module
+          if (isset($countryExceptions[$countryid]) && is_array($countryExceptions[$countryid])) {
             $activeProfiles = $apiGetservice->doRequest();
             $activeProfiles = $activeProfiles['paymentOptions'];
 
-
-            $paymentaddress = new Address($params['cart']->id_address_invoice);
-            $countryid      = $paymentaddress->id_country;
-
-            // Only the profiles of the target country should remain in this array :). (Only when the count is > 0, otherwise it might indicate problems)
-            if (count($countryExceptions) > 0) {
-                if (isset($countryExceptions[$countryid])) {
-                    foreach ($activeProfiles as $id => $profile) {
-                        if ( ! isset($countryExceptions[$countryid][$profile['id']])) {
-                            unset($activeProfiles[$id]);
-                        }
-                    }
-                }
+            foreach ($activeProfiles as $id => $profile) {
+              if (!isset($countryExceptions[$countryid][$profile['id']])) {
+                unset($activeProfiles[$id]);
+              }
             }
+          }
 
             // Order remaining profiles based by order...
             asort($methodOrder);
