@@ -9,7 +9,7 @@ class paynl_paymentmethodsNotificationModuleFrontController extends ModuleFrontC
             Tools::redirect('index.php?controller=order');
         }
 
-        $foutmelding = $this->context->cookie->redirect_errors;
+        $errorMessage = $this->context->cookie->redirect_errors;
         $link = Context::getContext()->link->getModuleLink('paynl_paymentmethods', 'notification') . '&redirect=1';
 
         $message = $this->module->l('Probably the order amount is too low or too high for this paymentmethod') . '.</br>';
@@ -20,7 +20,7 @@ class paynl_paymentmethodsNotificationModuleFrontController extends ModuleFrontC
         $this->context->smarty->assign('proceedurl', $link);
         $this->context->smarty->assign('proceed_message', $this->module->l('Proceed'));
         $this->context->smarty->assign('messsage', $message);
-        $this->context->smarty->assign('error_message', $foutmelding);
+        $this->context->smarty->assign('error_message', $errorMessage);
 
         $this->setTemplate('notification.tpl');
     }
