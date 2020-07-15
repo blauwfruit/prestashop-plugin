@@ -6,7 +6,7 @@ class paynl_paymentmethodsNotificationModuleFrontController extends ModuleFrontC
     public function initContent()
     {
         if ($_GET['redirect'] == 1) {
-            Tools::redirect('index.php?controller=order&step=3');
+            Tools::redirect('index.php?controller=order');
         }
 
         $foutmelding = $this->context->cookie->redirect_errors;
