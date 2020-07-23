@@ -239,7 +239,8 @@ class paynl_paymentmethodsPaymentModuleFrontController extends ModuleFrontContro
             Tools::redirect($result['transaction']['paymentURL']);
 
         } catch (Exception $e) {
-            echo $e->getMessage();
+            $this->context->cookie->__set('redirect_errors', $e->getMessage());
+            Tools::redirect(Context::getContext()->link->getModuleLink('paynl_paymentmethods', 'notification'));
         }
         //betaling starten
     }
