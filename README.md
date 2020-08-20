@@ -54,7 +54,7 @@ Download the latest .tgz release and upload into *Modules and Services* > *Modul
 4. upload the latest .tgz the overwrites the old one.
 # Usage
 
-**More information on this plugin can be found on hhttps://docs.pay.nl/plugins#prestashop**
+**More information on this plugin can be found on https://docs.pay.nl/plugins#prestashop**
 
 # Support
 https://www.pay.nl
