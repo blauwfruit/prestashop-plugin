@@ -48,7 +48,7 @@ Download the latest .tgz release and upload into *Modules and Services* > *Modul
 
 #### Update instructions
 
-1. log into the Prestashop admin
+1. log into the PrestaShop admin
 2. Go to *Modules and Services* > *Modules and Services*
 3. press *Add a new module*
 4. upload the latest .tgz the overwrites the old one.
