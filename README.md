@@ -1,16 +1,22 @@
-# PAY. PrestaShop plugin
-
----
-- [Summary](#summary)
-- [Quickstart](#quickstart)
-- [Setup](#setup)
-
----
-### Summary
+<p align="center">
+  <img src="https://www.pay.nl/uploads/1/brands/main_logo.png" />
+</p>
+<h1 align="center">PAY. PrestaShop plugin</h1>
+    
+# Description
 
 With this plug-in by PAY. you can easily add all desired payment methods to your PrestaShop 1.6 webshop. Please refer to https://www.pay.nl (Dutch) for an overview of all features and services. 
 
-##### Available payment methods:
+- [Description](#description)
+- [Available payment methods](#available-payment-methods)
+- [Installation](#installation)
+- [Update instructions](#update-instructions)
+- [Usage](#usage)
+- [Support](#support)
+
+
+
+# Available payment methods:
 
 Bank Payments  | Creditcards | Gift cards & Vouchers | Pay by invoice | Others | 
 :-----------: | :-----------: | :-----------: | :-----------: | :-----------: |
@@ -24,10 +30,8 @@ Bank Transfer | Cartasi | GivaCard | SprayPay | Przelewy24 |
 | Tikkie | | YourGift | Creditclick | | 
 | | | Paysafecard |
 
-
-### Quickstart
-
-##### Installing
+# Installation
+#### Installing
 
 Download the latest .tgz release and upload into *Modules and Services* > *Modules and Services* > *Add a new module*
 
@@ -42,4 +46,17 @@ Download the latest .tgz release and upload into *Modules and Services* > *Modul
 7. Enable the desired payment methods
 8. Save the settings
 
-Go to the *Manage* > *Services* tab in the PAY. Admin Panel to enable extra payment methods
+#### Update instructions
+
+1. log into the PrestaShop admin
+2. Go to *Modules and Services* > *Modules and Services*
+3. press *Add a new module*
+4. upload the latest .tgz the overwrites the old one.
+# Usage
+
+**More information on this plugin can be found on https://docs.pay.nl/plugins#prestashop**
+
+# Support
+https://www.pay.nl
+
+Contact us: support@pay.nl
