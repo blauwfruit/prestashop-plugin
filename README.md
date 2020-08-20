@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://www.pay.nl/uploads/1/brands/main_logo.png" />
 </p>
-<h1 align="center">PAY. PrestaShop plugin/h1>
+<h1 align="center">PAY. PrestaShop plugin</h1>
     
 # Description
 
@@ -48,13 +48,13 @@ Download the latest .tgz release and upload into *Modules and Services* > *Modul
 
 #### Update instructions
 
-1. log into the PRestashop admin
-2. 2. Go to *Modules and Services* > *Modules and Services*
+1. log into the Prestashop admin
+2. Go to *Modules and Services* > *Modules and Services*
 3. press *Add a new module*
 4. upload the latest .tgz the overwrites the old one.
 # Usage
 
-**More information on this plugin can be found on https://docs.pay.nl/**
+**More information on this plugin can be found on hhttps://docs.pay.nl/plugins#prestashop**
 
 # Support
 https://www.pay.nl
