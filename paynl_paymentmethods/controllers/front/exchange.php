@@ -34,6 +34,7 @@ class paynl_paymentmethodsExchangeModuleFrontController extends ModuleFrontContr
             $transactionId = Tools::getValue('order_id');
             $action = Tools::getValue('action');
 
+            Pay_Helper::$identifier = 'exc' . uniqid();
             Pay_Helper::payLog('Exchange incoming: ' . $action, $transactionId);
 
             try{

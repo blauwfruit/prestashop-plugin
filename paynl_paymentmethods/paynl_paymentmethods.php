@@ -90,8 +90,12 @@ class paynl_paymentmethods extends PaymentModule
             } else {
                 $id_order_state_tmp = $id_order_state;
             }
+
             $result  = parent::validateOrder($id_cart, $id_order_state_tmp, $amount_paid, $payment_method, $message,
                 $extra_vars, $currency_special, $dont_touch_amount, $secure_key, $shop);
+
+            Pay_Helper::payLog('validateOrderPay: validated order: ' . $extraCosts . ' - ' . $id_order_state_tmp . ' - ' . $statusPaid, $extra_vars['transaction_id'], $cart->id);
+
             $orderId = $this->currentOrder;
 
             if ($extraCosts == 0 && $id_order_state_tmp == $statusPaid) {
@@ -132,6 +136,7 @@ class paynl_paymentmethods extends PaymentModule
             $history           = new OrderHistory();
             $history->id_order = (int)$order->id;
             $history->changeIdOrderState((int)$id_order_state, $order, $orderPayment);
+
             $res                    = Db::getInstance()->getRow('
 			SELECT `invoice_number`, `invoice_date`, `delivery_number`, `delivery_date`
 			FROM `' . _DB_PREFIX_ . 'orders`
