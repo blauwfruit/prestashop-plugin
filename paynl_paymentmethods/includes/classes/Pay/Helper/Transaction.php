@@ -49,9 +49,10 @@ class Pay_Helper_Transaction
 
         $cartId = $orderId = $transaction['order_id'];
 
-        if ($dry_run) {
-            $real_order_id = Order::getOrderByCartId($orderId);
+        $real_order_id = Order::getOrderByCartId($orderId);
+        $order = new Order($real_order_id);
 
+        if ($dry_run) {
             return array(
                 'orderId'       => $orderId,
                 'state'         => $stateText,
@@ -68,13 +69,14 @@ class Pay_Helper_Transaction
             throw new Pay_Exception_Notice('Status already processed');
         }
 
-        if ($transaction['status'] == 'PROCESSING') {
-          throw new Pay_Exception('Exchange still processing');
-        }
+      if ($stateText == 'PAID') {
 
-        self::updateTransactionState($transactionId, 'PROCESSING');
+            if ($transaction['status'] == 'PROCESSING') {
+              throw new Pay_Exception('Exchange still processing');
+            }
 
-        if ($stateText == 'PAID') {
+            self::updateTransactionState($transactionId, 'PROCESSING');
+
             $id_order_state = Configuration::get('PAYNL_SUCCESS');
 
             /** @var CartCore $cart */
@@ -84,10 +86,7 @@ class Pay_Helper_Transaction
             /** @var CurrencyCore $objCurrency */
             $objCurrency = Currency::getCurrencyInstance((int) $cart->id_currency);
 
-            $real_order_id = Order::getOrderByCartId($orderId);
-            $order = new Order($real_order_id);
             $currentorderstate = $order->getCurrentOrderState();
-
             if (!empty($currentorderstate) && $currentorderstate->paid == '1') {
                 throw new Pay_Exception_Notice('Order paid already');
             }
@@ -117,8 +116,13 @@ class Pay_Helper_Transaction
 
             $real_order_id = Order::getOrderByCartId($cartId);
 
+            if ($order->module != $module->name) {
+              Pay_Helper::payLog('ProcessTransaction: cancel ignored', $transactionId);
+              throw new Pay_Exception_Notice('Ignoring cancel, other or empty provider');
+            }
+
             if ( ! self::shouldCancel($transactionId)) {
-                throw new Pay_Exception_Notice('Cancel');
+                throw new Pay_Exception_Notice('Ignoring cancel, order not yet validated.');
             }
 
             if ($real_order_id) {
