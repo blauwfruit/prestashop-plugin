@@ -49,11 +49,10 @@ class Pay_Helper_Transaction
 
         $cartId = $orderId = $transaction['order_id'];
 
-        $orderPaid = self::orderPaid($orderId);
+        $real_order_id = Order::getOrderByCartId($orderId);
+        $order = new Order($real_order_id);
 
         if ($dry_run) {
-            $real_order_id = Order::getOrderByCartId($orderId);
-
             return array(
                 'orderId'       => $orderId,
                 'state'         => $stateText,
@@ -61,6 +60,7 @@ class Pay_Helper_Transaction
             );
         }
 
+        $orderPaid = self::orderPaid($orderId);
         if ($orderPaid == true && $stateText != 'PAID') {
             throw new Pay_Exception_Notice('Order already paid');
         }
@@ -69,7 +69,14 @@ class Pay_Helper_Transaction
             throw new Pay_Exception_Notice('Status already processed');
         }
 
-        if ($stateText == 'PAID') {
+      if ($stateText == 'PAID') {
+
+            if ($transaction['status'] == 'PROCESSING') {
+              throw new Pay_Exception('Exchange still processing');
+            }
+
+            self::updateTransactionState($transactionId, 'PROCESSING');
+
             $id_order_state = Configuration::get('PAYNL_SUCCESS');
 
             /** @var CartCore $cart */
@@ -79,11 +86,8 @@ class Pay_Helper_Transaction
             /** @var CurrencyCore $objCurrency */
             $objCurrency = Currency::getCurrencyInstance((int) $cart->id_currency);
 
-            $real_order_id = Order::getOrderByCartId($orderId);
-            $order = new Order($real_order_id);
             $currentorderstate = $order->getCurrentOrderState();
-
-            if ($currentorderstate->paid == '1') {
+            if (!empty($currentorderstate) && $currentorderstate->paid == '1') {
                 throw new Pay_Exception_Notice('Order paid already');
             }
 
@@ -112,8 +116,13 @@ class Pay_Helper_Transaction
 
             $real_order_id = Order::getOrderByCartId($cartId);
 
+            if ($order->module != $module->name) {
+              Pay_Helper::payLog('ProcessTransaction: cancel ignored', $transactionId);
+              throw new Pay_Exception_Notice('Ignoring cancel, other or empty provider');
+            }
+
             if ( ! self::shouldCancel($transactionId)) {
-                throw new Pay_Exception_Notice('Cancel');
+                throw new Pay_Exception_Notice('Ignoring cancel, order not yet validated.');
             }
 
             if ($real_order_id) {
@@ -204,7 +213,7 @@ class Pay_Helper_Transaction
 
     /**
      * Check if the order is already paid, it is possible that an order has more than 1 transaction.
-     * So we heck if another transaction for this order is already paid
+     * So we check if another transaction for this order is already paid
      *
      * @param integer $order_id
      */
@@ -224,6 +233,8 @@ class Pay_Helper_Transaction
 
     private static function updateTransactionState($transactionId, $statusText)
     {
+        Pay_Helper::payLog('updateTransactionState: to ' . $statusText, $transactionId);
+
         $db = Db::getInstance();
 
         $db->update('pay_transactions', array('status' => $statusText),

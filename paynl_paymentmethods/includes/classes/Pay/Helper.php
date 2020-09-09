@@ -2,6 +2,8 @@
 
 class Pay_Helper {
 
+    public static $identifier = null;
+
     /**
      * Get the status by statusId
      *
@@ -186,12 +188,21 @@ class Pay_Helper {
     public static function payLog($strText, $transactionId = null, $cartid = null)
     {
         if (Configuration::get('PAYNL_LOGGING') == 1) {
+
+            $identifier = self::$identifier;
+
+            if (empty($identifier)) {
+                self::$identifier = 'int' . uniqid();
+                $identifier = self::$identifier;
+            }
+
             $strMessage = 'PAY.';
+            $strMessage .= ' = ' . $identifier . ' = ';
             $strMessage .= empty($transactionId) ? ' : ' : ' [ ' . $transactionId . ' ] ';
             $strMessage .= empty($cartid) ? ' : ' : ' [ ' . $cartid . ' ] ';
             $strMessage .= $strText;
 
-            PrestaShopLogger::addLog($strMessage);
+            PrestaShopLogger::addLog($strMessage, 1, null, null, null, true);
         }
     }
 
