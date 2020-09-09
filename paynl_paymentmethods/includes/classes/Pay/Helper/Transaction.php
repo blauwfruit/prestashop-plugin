@@ -71,12 +71,6 @@ class Pay_Helper_Transaction
 
       if ($stateText == 'PAID') {
 
-            if ($transaction['status'] == 'PROCESSING') {
-              throw new Pay_Exception('Exchange still processing');
-            }
-
-            self::updateTransactionState($transactionId, 'PROCESSING');
-
             $id_order_state = Configuration::get('PAYNL_SUCCESS');
 
             /** @var CartCore $cart */
