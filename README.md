@@ -33,7 +33,7 @@ Bank Transfer | Cartasi | GivaCard | SprayPay | Przelewy24 |
 # Installation
 #### Installing
 
-Download the latest .tgz release and upload into *Modules and Services* > *Modules and Services* > *Add a new module*
+Download the latest .zip release and upload into *Modules and Services* > *Modules and Services* > *Add a new module*
 
 ##### Setup
 
@@ -48,10 +48,12 @@ Download the latest .tgz release and upload into *Modules and Services* > *Modul
 
 #### Update instructions
 
-1. log into the PrestaShop admin
+1. Download the latest .zip release from https://github.com/paynl/prestashop-plugin/releases
+1. Log into the PrestaShop admin
 2. Go to *Modules and Services* > *Modules and Services*
-3. press *Add a new module*
-4. upload the latest .tgz the overwrites the old one.
+3. Press *Add a new module*
+4. Upload the latest .zip to override the old version.
+5. You can now configure the plugin if the upload was successful.
 # Usage
 
 **More information on this plugin can be found on https://docs.pay.nl/plugins#prestashop**
